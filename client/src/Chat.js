@@ -20,33 +20,36 @@ const Chat = ({ socket, name, msgs, setMsgs }) => {
     setMsgs(copy);
   };
 
+  const handlePlayerReady = ({ name, readyUp, playersReady, totalPlayers }) => {
+    const copy = [...msgsRef.current];
+    copy.push(
+      `${name} is ${
+        readyUp ? "ready" : "not ready"
+      } (${playersReady}/${totalPlayers})`
+    );
+    setMsgs(copy);
+  };
+
+  const handleRoundEnd = ({ winner }) => {
+    const copy = [...msgsRef.current];
+    copy.push(`${winner} guessed right!`);
+    setMsgs(copy);
+  };
+
+  const handleGameEnd = ({ winner }) => {
+    const copy = [...msgsRef.current];
+    copy.push(`${winner} won the game!!`);
+    setMsgs(copy);
+  };
+
   useEffect(() => {
     socket.on("receive-msg", (msg) => handleReceive(msg));
 
-    socket.on(
-      "player-ready",
-      ({ name, readyUp, playersReady, totalPlayers }) => {
-        const copy = [...msgsRef.current];
-        copy.push(
-          `${name} is ${
-            readyUp ? "ready" : "not ready"
-          } (${playersReady}/${totalPlayers})`
-        );
-        setMsgs(copy);
-      }
-    );
+    socket.on("player-ready", handlePlayerReady);
 
-    socket.on("round-end", ({ winner }) => {
-      const copy = [...msgsRef.current];
-      copy.push(`${winner} guessed right!`);
-      setMsgs(copy);
-    });
+    socket.on("round-end", handleRoundEnd);
 
-    socket.on("game-end", ({ winner }) => {
-      const copy = [...msgsRef.current];
-      copy.push(`${winner} won the game!!`);
-      setMsgs(copy);
-    });
+    socket.on("game-end", handleGameEnd);
   }, []);
 
   return (
