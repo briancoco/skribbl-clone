@@ -5,14 +5,6 @@ const RoomToolbar = ({ socket, name, setName }) => {
   const [curr, setCurr] = useState(null);
   const [isReady, setIsReady] = useState(false);
   const isReadyRef = useRef(isReady);
-  const playerCount = useRef({ total: 0, ready: 0 });
-
-  // useEffect(() => {
-  //   socket.on('joined-room', ({totalPlayers, readyPlayers}) => {
-  //     playerCount.current.total = totalPlayers;
-  //     playerCount.
-  //   })
-  // }, [isReady]);
 
   const handleRoomJoin = (e) => {
     e.preventDefault();
@@ -32,7 +24,7 @@ const RoomToolbar = ({ socket, name, setName }) => {
 
   return (
     <>
-      <div style={{ textAlign: "center" }}>
+      <div className="userRoom">
         {curr && `${curr.name} is currently in ${curr.room}`}
       </div>
       <form className="RoomToolbar" onSubmit={handleRoomJoin}>

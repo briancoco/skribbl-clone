@@ -89,3 +89,15 @@ code {
   font-weight: bold;
   font-size: 3rem;
 }
+
+.wordToDraw {
+  font-family: 'Handjet';
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.userRoom {
+  text-align: center;
+  font-family: 'Handjet';
+  font-weight: bold;
+}

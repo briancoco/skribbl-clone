@@ -104,7 +104,7 @@ function App() {
   return (
     <div className="App">
       <img src={logo} />
-      {word && <div>Word to draw: {word}</div>}
+      {word && <div className="wordToDraw">Word to draw: {word}</div>}
       <Timer timer={timer} />
       <RoomToolbar socket={socket} name={name} setName={setName} />
       <div className="drawContainer">
