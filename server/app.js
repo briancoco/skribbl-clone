@@ -62,14 +62,12 @@ const startGame = (room) => {
     }
   }
   io.sockets.in(room).emit("clear-board");
+  const currRound = currRoom.currRound;
   setTimeout(() => {
-    if (
-      currRoom.players.length > 0 &&
-      !currRoom.isRoundDone[currRoom.currRound]
-    ) {
-      currRoom.isRoundDone[currRoom.currRound] = true;
+    if (currRoom.players.length > 0 && !currRoom.isRoundDone[currRound]) {
+      currRoom.isRoundDone[currRound] = true;
       currRoom.currRound += 1;
-      if (currRoom.currRound > 5) {
+      if (currRoom.currRound >= 5) {
         const winner = getWinner(room);
         io.sockets.in(room).emit("game-end", { winner });
         return;
@@ -132,14 +130,19 @@ io.on("connection", (socket) => {
   });
 
   socket.on("send-msg", (msg) => {
-    const room = clientData[socket.id] ? clientData[socket.id].room : socket.id;
+    const user = clientData[socket.id];
+    if (!user) return;
+    const room = user.room;
     //add logic to check if the msg in the chat matches the word to be guessed
     //if yes, we also want to emit another event to signify that the round
     //has been won, and we want to end the current round
     const roomData = rooms[room];
     let gameDone = false;
     socket.to(room).emit("receive-msg", msg);
-    if (msg.content.toLowerCase() === roomData.currentWord.toLowerCase()) {
+    if (
+      socket.id !== roomData.currPlayer.id &&
+      msg.content.toLowerCase() === roomData.currentWord.toLowerCase()
+    ) {
       for (const player of roomData.players) {
         if (player.id === socket.id) {
           player.points += 1;
